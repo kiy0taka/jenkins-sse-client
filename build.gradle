@@ -44,7 +44,9 @@ dependencies {
                 'org.jenkins-ci.plugins:pipeline-stage-step:2.2',
                 'org.jenkins-ci.plugins.workflow:workflow-durable-task-step:2.12',
                 'org.jenkins-ci.plugins.workflow:workflow-aggregator:2.5',
-                'org.jenkins-ci.plugins.workflow:workflow-cps:2.36'
+                'org.jenkins-ci.plugins.workflow:workflow-cps:2.36',
+                'io.jenkins.blueocean:blueocean-events:1.1.4'
+
 }
 
 task resolveTestPlugins(type: Copy) {

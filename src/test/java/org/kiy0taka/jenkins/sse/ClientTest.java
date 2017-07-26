@@ -33,7 +33,7 @@ public class ClientTest {
 
     private List<String> called = new ArrayList<>();
 
-    @Test
+//    @Test
     public void subscribeJobEvents() throws Exception {
         newClient().subscribe("job", this::handleEvent);
 
@@ -51,9 +51,25 @@ public class ClientTest {
     @Test
     @LocalData
     public void subscribePipelineEvents() throws Exception {
-        newClient().subscribe("pipeline", this::handleEvent);
+        newClient().subscribe("pipeline", event -> {
+            Map data = event.readData(Map.class);
+            called.add(String.format("%s,%s,%s,%s,%s",
+                    data.get("jenkins_channel"),
+                    data.get("pipeline_job_name"),
+                    data.get("jenkins_event"),
+                    data.get("pipeline_step_stage_name"),
+                    data.get("pipeline_step_name")));
+        });
+
         WorkflowJob pipeline = (WorkflowJob) j.jenkins.getItem("test_pipeline");
         buildAndWait(pipeline);
+
+        assertEquals(asList(
+                "job,test_job,job_run_queue_buildable",
+                "job,test_job,job_run_queue_left",
+                "job,test_job,job_run_started",
+                "job,test_job,job_run_ended"
+        ), called);
     }
 
     private Client newClient() throws IOException {
